@@ -66,9 +66,9 @@ Clean the build to ensure MongoDB driver compatibility, then start the server.
 ```properties
 mvn clean install
 mvn spring-boot:run
-
-You should see: ✅ SecretVaultService Ready
 ```
+You should see: ✅ SecretVaultService Ready
+
 
 🛡️ Admin API (Management)
 All Admin endpoints require the header X-ADMIN-KEY matching the value in application.properties.
@@ -123,7 +123,7 @@ GET /api/secrets/{appId}
 
 ```properties
 curl -X GET http://localhost:8080/api/secrets/payment-service
-
+```
 Response:
 
 JSON
@@ -133,7 +133,7 @@ JSON
   "secretValue": "Xy9z...random_secure_string...",
   "createdAt": "2023-12-17T12:00:00Z"
 }
-```
+
 
 ## 2. Force Rotation
 Forces the generation of a new secret immediately, regardless of expiration time.

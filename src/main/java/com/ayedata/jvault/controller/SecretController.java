@@ -1,7 +1,7 @@
 package com.ayedata.jvault.controller;
 
 import com.ayedata.jvault.model.AppSecret;
-import com.ayedata.jvault.service.SecretService;
+import com.ayedata.jvault.service.SecretVaultService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,19 +9,35 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/secrets")
 public class SecretController {
 
-    private final SecretService secretService;
+    private final SecretVaultService vaultService;
 
-    public SecretController(SecretService secretService) {
-        this.secretService = secretService;
+    // Notice: We DO NOT inject AppRegistryRepository here. 
+    // This controller physically cannot register new apps.
+    public SecretController(SecretVaultService vaultService) {
+        this.vaultService = vaultService;
     }
 
+    /**
+     * GET SECRET
+     * Validates if app is allowed. If allowed but missing, generates a new one.
+     * If NOT allowed, throws 403 Forbidden (via Service check).
+     */
     @GetMapping("/{appId}")
     public ResponseEntity<AppSecret> getSecret(@PathVariable String appId) {
-        return ResponseEntity.ok(secretService.getAppSecret(appId));
+        // The service performs the "isAppAllowed()" check immediately.
+        AppSecret secret = vaultService.getAppSecret(appId);
+        return ResponseEntity.ok(secret);
     }
 
+    /**
+     * ROTATE SECRET (Manual Trigger)
+     * Forces a new password generation for an ALREADY REGISTERED app.
+     * Cannot be used to register a new app.
+     */
     @PostMapping("/{appId}/rotate")
     public ResponseEntity<AppSecret> rotateSecret(@PathVariable String appId) {
-        return ResponseEntity.ok(secretService.rotateSecret(appId));
+        // The service performs the "isAppAllowed()" check immediately.
+        AppSecret secret = vaultService.rotateSecret(appId);
+        return ResponseEntity.ok(secret);
     }
 }

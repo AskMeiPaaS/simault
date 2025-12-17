@@ -56,25 +56,27 @@ vault.admin.api-key=super-secret-admin-password-123
 ### 2. Generate Master Key
 The system requires a 96-byte local master key to unlock the vault. Run this command in the project root:
 
-Bash
+```properties
 openssl rand -out master-key.txt 96
+```
 
 ### 3. Build & Run
 Clean the build to ensure MongoDB driver compatibility, then start the server.
 
-Bash
+```properties
 mvn clean install
 mvn spring-boot:run
 
 You should see: ✅ SecretVaultService Ready
+```
 
 🛡️ Admin API (Management)
 All Admin endpoints require the header X-ADMIN-KEY matching the value in application.properties.
 
-1. Register an App (Whitelist)
+## 1. Register an App (Whitelist)
 POST /api/admin/apps
 
-Bash
+```properties
 
 curl -X POST http://localhost:8080/api/admin/apps \
      -H "Content-Type: application/json" \
@@ -83,38 +85,45 @@ curl -X POST http://localhost:8080/api/admin/apps \
            "appId": "payment-service", 
            "description": "Payment Processing Module"
          }'
-2. List Allowed Apps
+```
+
+## 2. List Allowed Apps
 GET /api/admin/apps
 
-Bash
+```properties
 
 curl -X GET http://localhost:8080/api/admin/apps \
      -H "X-ADMIN-KEY: super-secret-admin-password-123"
-3. Revoke Access
+```
+## 3. Revoke Access
 DELETE /api/admin/apps/{appId}
 
-Bash
+```properties
 
 curl -X DELETE http://localhost:8080/api/admin/apps/payment-service \
      -H "X-ADMIN-KEY: super-secret-admin-password-123"
-4. Search Encryption Keys
+```
+
+## 4. Search Encryption Keys
 GET /api/admin/keys (Optional param: ?altName=...)
 
-Bash
+```properties
 
 curl -X GET http://localhost:8080/api/admin/keys \
      -H "X-ADMIN-KEY: super-secret-admin-password-123"
-🔐 Client API (Integration)
+```
+
+### 🔐 Client API (Integration)
 Microservices use these endpoints to fetch their secrets. No API Key is required, but the appId must be whitelisted.
 
-1. Fetch Secret
+## 1. Fetch Secret
 If the secret exists (and is < 1 hour old), it returns the existing one. If expired or missing, it generates a new one.
 
 GET /api/secrets/{appId}
 
-Bash
-
+```properties
 curl -X GET http://localhost:8080/api/secrets/payment-service
+
 Response:
 
 JSON
@@ -124,14 +133,16 @@ JSON
   "secretValue": "Xy9z...random_secure_string...",
   "createdAt": "2023-12-17T12:00:00Z"
 }
-2. Force Rotation
+```
+
+## 2. Force Rotation
 Forces the generation of a new secret immediately, regardless of expiration time.
 
 POST /api/secrets/{appId}/rotate
 
-Bash
-
+```properties
 curl -X POST http://localhost:8080/api/secrets/payment-service/rotate
+```
 
 ### 📂 Project Structure
 Plaintext

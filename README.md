@@ -51,21 +51,21 @@ vault.security.key-alt-name=jvault-key-1
 
 # Security
 vault.admin.api-key=super-secret-admin-password-123
+```
 
-
-2. Generate Master Key
+### 2. Generate Master Key
 The system requires a 96-byte local master key to unlock the vault. Run this command in the project root:
 
 Bash
-
 openssl rand -out master-key.txt 96
-3. Build & Run
+
+### 3. Build & Run
 Clean the build to ensure MongoDB driver compatibility, then start the server.
 
 Bash
-
 mvn clean install
 mvn spring-boot:run
+
 You should see: ✅ SecretVaultService Ready
 
 🛡️ Admin API (Management)
@@ -132,8 +132,8 @@ POST /api/secrets/{appId}/rotate
 Bash
 
 curl -X POST http://localhost:8080/api/secrets/payment-service/rotate
-📂 Project Structure
-Plaintext
+
+### 📂 Project Structure
 
 jvault/
 ├── pom.xml
@@ -151,7 +151,7 @@ jvault/
         └── resources/
 
 
-⚠️ Troubleshooting
+#### ⚠️ Troubleshooting
 403 Forbidden: The application is not registered. Use the Admin API to register it first.
 
 500 Internal Error: Usually means master-key.txt is missing from the running directory.

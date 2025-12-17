@@ -22,6 +22,7 @@ public class AppRegistryRepository {
 
     private final MongoClient mongoClient;
     
+    // Inject database name from application.properties
     @Value("${vault.mongodb.database}") 
     private String dbName;
     
@@ -31,21 +32,27 @@ public class AppRegistryRepository {
         this.mongoClient = mongoClient;
     }
 
+    /**
+     * Initialization: Runs automatically on startup.
+     * Ensures the 'appId' index exists and is unique.
+     */
     @PostConstruct
     public void init() {
-        // Create a unique index on 'appId' to prevent duplicates
         getCollection().createIndex(
             Indexes.ascending("appId"), 
             new IndexOptions().unique(true)
         );
     }
 
+    // Helper to get the collection connection
     private MongoCollection<Document> getCollection() {
         return mongoClient.getDatabase(dbName).getCollection(COLLECTION_NAME);
     }
 
     /**
-     * Registers an app. If it exists, it updates the description.
+     * Registers a new app or updates an existing one (Upsert).
+     * * @param appId The unique identifier for the application (e.g., "payment-service")
+     * @param description A human-readable description
      */
     public void registerApp(String appId, String description) {
         Document doc = new Document()
@@ -53,8 +60,7 @@ public class AppRegistryRepository {
                 .append("description", description)
                 .append("registeredAt", Date.from(Instant.now()));
 
-        // Use replaceOne with upsert=true. 
-        // This acts as "Insert if new, Update if exists".
+        // replaceOne with upsert=true acts as "Insert or Update"
         getCollection().replaceOne(
                 Filters.eq("appId", appId), 
                 doc, 
@@ -63,14 +69,17 @@ public class AppRegistryRepository {
     }
 
     /**
-     * Checks if an app is in the allowed list.
+     * Checks if an application is currently authorized.
+     * * @param appId The application ID to check
+     * @return true if allowed, false otherwise
      */
     public boolean isAppAllowed(String appId) {
         return getCollection().countDocuments(Filters.eq("appId", appId)) > 0;
     }
 
     /**
-     * Fetches all registered apps from the database.
+     * Retrieves all registered applications.
+     * * @return List of AllowedApp model objects
      */
     public List<AllowedApp> findAll() {
         List<AllowedApp> apps = new ArrayList<>();
@@ -79,6 +88,7 @@ public class AppRegistryRepository {
             apps.add(new AllowedApp(
                 doc.getString("appId"),
                 doc.getString("description"),
+                // Handle potential null dates safely
                 doc.getDate("registeredAt") != null ? doc.getDate("registeredAt").toInstant() : null
             ));
         }
@@ -86,7 +96,9 @@ public class AppRegistryRepository {
     }
 
     /**
-     * Removes an app from the allowed list.
+     * Removes an application from the registry.
+     * This immediately revokes its access to get or rotate secrets.
+     * * @param appId The application ID to remove
      */
     public void removeApp(String appId) {
         getCollection().deleteOne(Filters.eq("appId", appId));

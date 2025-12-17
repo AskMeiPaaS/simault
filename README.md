@@ -149,6 +149,8 @@ jvault/
         │   ├── service/           <-- Core Business Logic
         │   └── JVaultApplication.java
         └── resources/
+
+
 ⚠️ Troubleshooting
 403 Forbidden: The application is not registered. Use the Admin API to register it first.
 

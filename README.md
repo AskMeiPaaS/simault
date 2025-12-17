@@ -134,6 +134,7 @@ Bash
 curl -X POST http://localhost:8080/api/secrets/payment-service/rotate
 
 ### 📂 Project Structure
+Plaintext
 
 jvault/
 ├── pom.xml
@@ -151,7 +152,7 @@ jvault/
         └── resources/
 
 
-#### ⚠️ Troubleshooting
+### ⚠️ Troubleshooting
 403 Forbidden: The application is not registered. Use the Admin API to register it first.
 
 500 Internal Error: Usually means master-key.txt is missing from the running directory.

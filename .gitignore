@@ -1,0 +1,10 @@
+# Build results
+target/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+
+# SECURITY: Never commit the Master Key!
+master-key.txt

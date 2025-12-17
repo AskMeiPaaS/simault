@@ -1,6 +1,6 @@
-# 🔐 JVault: Secure Microservice Secrets Manager
+# 🔐 Simault®® (Simple Vault): A Simple Secrets Manager
 
-JVault is a secure, lightweight Vault service built with **Java 21** and **Spring Boot 3**. It provides ephemeral (short-lived) secrets for microservices using **MongoDB Client-Side Field Level Encryption (CSFLE)**.
+Simault®® is a secure, lightweight Vault service built with **Java 21** and **Spring Boot 3**. It provides ephemeral (short-lived) secrets for microservices using **MongoDB Client-Side Field Level Encryption (CSFLE)**.
 
 ## 🚀 Features
 
@@ -47,7 +47,7 @@ vault.mongodb.collection=secrets
 # Encryption Keys (Local KMS)
 vault.security.kms-provider=local
 vault.security.master-key-path=master-key.txt
-vault.security.key-alt-name=jvault-key-1
+vault.security.key-alt-name=vault-key-1
 
 # Security
 vault.admin.api-key=super-secret-admin-password-123
@@ -147,19 +147,19 @@ curl -X POST http://localhost:8080/api/secrets/payment-service/rotate
 ### 📂 Project Structure
 Plaintext
 
-jvault/
+Simault®/
 ├── pom.xml
 ├── master-key.txt                 <-- Generated Security Key
 ├── application.properties         <-- Config (Root Level)
 └── src
     └── main
-        ├── java/com/ayedata/jvault
+        ├── java/com/ayedata/simault
         │   ├── config/            <-- Mongo & Encryption Config
         │   ├── controller/        <-- AdminController & SecretController
         │   ├── model/             <-- Java Records (AllowedApp, AppSecret)
         │   ├── repository/        <-- MongoDB Repositories
         │   ├── service/           <-- Core Business Logic
-        │   └── JVaultApplication.java
+        │   └── SimaultApplication.java
         └── resources/
 
 

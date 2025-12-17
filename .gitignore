@@ -8,3 +8,4 @@ target/
 
 # SECURITY: Never commit the Master Key!
 master-key.txt
+/src/main/resources/application.properties

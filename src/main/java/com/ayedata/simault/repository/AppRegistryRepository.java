@@ -1,6 +1,6 @@
-package com.ayedata.jvault.repository;
+package com.ayedata.simault.repository;
 
-import com.ayedata.jvault.model.AllowedApp;
+import com.ayedata.simault.model.AllowedApp;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;

@@ -1,4 +1,4 @@
-package com.ayedata.jvault.model;
+package com.ayedata.simault.model;
 
 import java.time.Instant;
 

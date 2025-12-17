@@ -1,4 +1,4 @@
-package com.ayedata.jvault.controller;
+package com.ayedata.simault.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

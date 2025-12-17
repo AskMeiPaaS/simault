@@ -1,7 +1,7 @@
-package com.ayedata.jvault.service;
+package com.ayedata.simault.service;
 
-import com.ayedata.jvault.model.AppSecret;
-import com.ayedata.jvault.repository.AppRegistryRepository;
+import com.ayedata.simault.model.AppSecret;
+import com.ayedata.simault.repository.AppRegistryRepository;
 import com.mongodb.ClientEncryptionSettings;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;

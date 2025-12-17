@@ -1,7 +1,7 @@
-package com.ayedata.jvault.service;
+package com.ayedata.simault.service;
 
-import com.ayedata.jvault.model.AppSecret;
-import com.ayedata.jvault.repository.SecretRepository;
+import com.ayedata.simault.model.AppSecret;
+import com.ayedata.simault.repository.SecretRepository;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;

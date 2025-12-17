@@ -1,4 +1,4 @@
-package com.ayedata.jvault.config;
+package com.ayedata.simault.config;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;

@@ -1,8 +1,8 @@
-package com.ayedata.jvault.controller;
+package com.ayedata.simault.controller;
 
-import com.ayedata.jvault.model.AllowedApp;
-import com.ayedata.jvault.model.VaultKey; // Import new model
-import com.ayedata.jvault.repository.AppRegistryRepository;
+import com.ayedata.simault.model.AllowedApp;
+import com.ayedata.simault.model.VaultKey;
+import com.ayedata.simault.repository.AppRegistryRepository;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;

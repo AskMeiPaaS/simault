@@ -1,7 +1,7 @@
-package com.ayedata.jvault.controller;
+package com.ayedata.simault.controller;
 
-import com.ayedata.jvault.model.AppSecret;
-import com.ayedata.jvault.service.SecretVaultService;
+import com.ayedata.simault.model.AppSecret;
+import com.ayedata.simault.service.SecretVaultService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

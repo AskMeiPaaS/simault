@@ -1,4 +1,4 @@
-package com.ayedata.jvault.util;
+package com.ayedata.simault.util;
 
 import java.io.FileInputStream;
 import java.io.IOException;

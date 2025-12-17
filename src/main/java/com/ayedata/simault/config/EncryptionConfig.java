@@ -1,6 +1,6 @@
-package com.ayedata.jvault.config;
+package com.ayedata.simault.config;
 
-import com.ayedata.jvault.util.KeyUtils;
+import com.ayedata.simault.util.KeyUtils;
 import com.mongodb.ClientEncryptionSettings;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;

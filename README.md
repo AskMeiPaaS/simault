@@ -1,6 +1,6 @@
-# 🔐 Simault®® (Simple Vault): A Simple Secrets Manager
+# 🔐 Simault® (Simple Vault): A Simple Secrets Manager
 
-Simault®® is a secure, lightweight Vault service built with **Java 21** and **Spring Boot 3**. It provides ephemeral (short-lived) secrets for microservices using **MongoDB Client-Side Field Level Encryption (CSFLE)**.
+Simault® is a secure, lightweight Vault service built with **Java 21** and **Spring Boot 3**. It provides ephemeral (short-lived) secrets for microservices using **MongoDB Client-Side Field Level Encryption (CSFLE)**.
 
 ## 🚀 Features
 

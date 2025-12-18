@@ -10,6 +10,7 @@ Simault® is a secure, lightweight Vault service built with **Java 21** and **Sp
 * **Whitelist Security**: Only applications explicitly registered via the Admin API can request secrets.
 * **Secure Admin API**: Administrative actions are protected by a configurable API Key.
 * **API-First Design**: No hardcoded application lists; everything is managed dynamically via REST endpoints.
+* **Highly Resilient Architecture**: Stateless Application + MongoDB Replica Set
 
 ---
 

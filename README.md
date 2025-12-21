@@ -180,26 +180,26 @@ curl -X POST http://localhost:8080/api/secrets/payment-service/rotate
 ### 📂 Project Structure
 Plaintext
 
-Simault®/
-├── pom.xml
-├── master-key.txt                 <-- Generated Security Key
-├── application.properties         <-- Config (Root Level)
-└── src
-    └── main
-        ├── java/com/ayedata/simault
-           ├── config/            <-- Mongo & Encryption Config
-           ├── controller/        <-- AdminController & SecretController
-           ├── model/             <-- Java Records (AllowedApp, AppSecret)
-           ├── repository/        <-- MongoDB Repositories
-           ├── service/           <-- Core Business Logic
-           ├── SimaultApplication.java
-           ├── mcp/                    <-- MCP Server Implementation
-               ├── admin/
-               │   └── AdminRegistryTools.java       (Whitelist Mgmt)
-               ├── vault/
-               │   └── SecretVaultTools.java         (Get/Rotate Secrets)
-               └── observability/
-                    └── SecretHealthTools.java        (Safe Health Checks)
+Simault/<br>
+├── pom.xml<br>
+├── master-key.txt                 <-- Generated Security Key<br>
+├── application.properties         <-- Config (Root Level)<br>
+└── src<br>
+    └── main<br>
+        ├── java/com/ayedata/simault<br>
+           ├── config/            <-- Mongo & Encryption Config<br>
+           ├── controller/        <-- AdminController & SecretController<br>
+           ├── model/             <-- Java Records (AllowedApp, AppSecret)<br>
+           ├── repository/        <-- MongoDB Repositories<br>
+           ├── service/           <-- Core Business Logic<br>
+           ├── SimaultApplication.java<br>
+           ├── mcp/                    <-- MCP Server Implementation<br>
+               ├── admin/<br>
+               │   └── AdminRegistryTools.java       (Whitelist Mgmt)<br>
+               ├── vault/<br>
+               │   └── SecretVaultTools.java         (Get/Rotate Secrets)<br>
+               └── observability/<br>
+                    └── SecretHealthTools.java        (Safe Health Checks)<br>
                
 ### ⚠️ Troubleshooting
 Import org.springframework.ai cannot be resolved:

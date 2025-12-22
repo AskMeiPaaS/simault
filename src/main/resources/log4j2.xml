@@ -3,13 +3,17 @@
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout>
-                <Pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %replace{%msg}{(?i)(Bearer\s+|token=|password=|key":")([a-zA-Z0-9\._-]+)}{$1*****REDACTED*****}%n</Pattern>
+                <ScriptPatternSelector defaultPattern="[%-5level] %c{1} - %m%n">
+                    <PatternMatch key="*">
+                         <Pattern><![CDATA[%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %replace{%msg %xEx}{(?i)(Bearer\s+|token=|key\s*&quot;:&quot;?|password=)([\w\.-]+)}{$1*****REDACTED*****}%n]]></Pattern>
+                    </PatternMatch>
+                </ScriptPatternSelector>
             </PatternLayout>
         </Console>
 
         <File name="File" fileName="logs/app.log">
             <PatternLayout>
-                <Pattern>%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %replace{%msg}{(?i)(Bearer\s+|token=|password=|key":")([a-zA-Z0-9\._-]+)}{$1*****REDACTED*****}%n</Pattern>
+                <Pattern><![CDATA[%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %replace{%msg %xEx}{(?i)(Bearer\s+|token=|key\s*&quot;:&quot;?|password=)([\w\.-]+)}{$1*****REDACTED*****}%n]]></Pattern>
             </PatternLayout>
         </File>
     </Appenders>

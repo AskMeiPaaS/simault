@@ -30,6 +30,11 @@ public class ChatController {
     public String chat(@RequestBody Map<String, String> payload) {
         String userMessage = payload.get("message");
         
+        if (userMessage == null || userMessage.isEmpty()) {
+            logger.warn("Incoming Chat Request is empty or null");
+            return "⚠️ Please provide a message.";
+        }
+        
         // Log the incoming user message (Log4j will redact if they accidentally paste a token)
         logger.info("Incoming Chat Request: {}", userMessage);
 

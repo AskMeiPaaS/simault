@@ -12,6 +12,7 @@ import java.util.Map;
 /**
  * Exposes Client/Runtime capabilities to autonomous agents.
  * Base Path: /api/client/.well-known/agent-card
+ * Matches logic in: com.ayedata.simault.controller.SecretController
  */
 @RestController
 @RequestMapping("/api/client")

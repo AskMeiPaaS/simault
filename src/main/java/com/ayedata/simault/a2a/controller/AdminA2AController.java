@@ -12,6 +12,7 @@ import java.util.Map;
 /**
  * Exposes Administrative capabilities to autonomous agents.
  * Base Path: /api/admin/.well-known/agent-card
+ * Matches logic in: com.ayedata.simault.controller.AdminController
  */
 @RestController
 @RequestMapping("/api/admin")
@@ -30,7 +31,7 @@ public class AdminA2AController {
             "1.0.0",
             new AgentIdentity(
                 "Simault-Admin-Agent",
-                "Administrative Agent. Manages application whitelists and revocations.",
+                "Administrative Agent. Manages application whitelists, revocations, and key lookups.",
                 "1.0.0",
                 "MIT",
                 "Ayedata Inc."

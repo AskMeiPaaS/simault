@@ -9,8 +9,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Exposes Client/Runtime capabilities to autonomous agents.
+ * Base Path: /api/client/.well-known/agent-card
+ */
 @RestController
-@RequestMapping("/api/client") // <--- Distinct base path for clients
+@RequestMapping("/api/client")
 public class ClientA2AController {
 
     private final SecretVaultTools vaultTools;
@@ -33,14 +37,15 @@ public class ClientA2AController {
             ),
             generateClientCapabilities(),
             new AgentAuth(
-                "api-key",
-                "Requires 'X-ADMIN-KEY' (for rotation) or App-specific auth."
+                "none",
+                "Public endpoint, but 'appId' must be whitelisted by an Admin first."
             )
         );
     }
 
     private List<AgentCapability> generateClientCapabilities() {
         return List.of(
+            // Maps to SecretController.getSecret()
             new AgentCapability(
                 "getSecret",
                 "Retrieve the decrypted secret value for a registered application.",
@@ -49,11 +54,13 @@ public class ClientA2AController {
                     "type", "object",
                     "properties", Map.of("appId", Map.of("type", "string"))
                 ),
-                Map.of("type", "object", "description", "Secret details including raw value")
+                Map.of("type", "object", "description", "Secret object containing 'secretValue'")
             ),
+
+            // Maps to SecretController.rotateSecret()
             new AgentCapability(
                 "rotateSecret",
-                "Forcefully rotate the secret for a specific application.",
+                "Forcefully rotate (regenerate) the secret for a specific application.",
                 "function",
                 Map.of(
                     "type", "object",

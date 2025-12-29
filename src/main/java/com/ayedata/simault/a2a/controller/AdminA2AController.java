@@ -9,8 +9,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Exposes Administrative capabilities to autonomous agents.
+ * Base Path: /api/admin/.well-known/agent-card
+ */
 @RestController
-@RequestMapping("/api/admin") // <--- Base path for security isolation
+@RequestMapping("/api/admin")
 public class AdminA2AController {
 
     private final AdminRegistryTools adminTools;
@@ -34,13 +38,14 @@ public class AdminA2AController {
             generateAdminCapabilities(),
             new AgentAuth(
                 "api-key",
-                "Requires 'X-ADMIN-KEY' header."
+                "Requires 'X-ADMIN-KEY' header for all operations."
             )
         );
     }
 
     private List<AgentCapability> generateAdminCapabilities() {
         return List.of(
+            // Maps to AdminController.registerApp()
             new AgentCapability(
                 "registerNewApp",
                 "Register a new application in the whitelist.",
@@ -48,29 +53,33 @@ public class AdminA2AController {
                 Map.of(
                     "type", "object",
                     "properties", Map.of(
-                        "appId", Map.of("type", "string"),
-                        "description", Map.of("type", "string")
+                        "appId", Map.of("type", "string", "description", "The unique application identifier"),
+                        "description", Map.of("type", "string", "description", "Purpose of the application")
                     ),
                     "required", List.of("appId", "description")
                 ),
-                Map.of("type", "string")
+                Map.of("type", "string", "description", "Confirmation message")
             ),
+            
+            // Maps to AdminController.listApps()
             new AgentCapability(
                 "listAllowedApps",
                 "List all applications currently whitelisted.",
                 "function",
-                Map.of("type", "object", "properties", Map.of()),
-                Map.of("type", "array")
+                Map.of("type", "object", "properties", Map.of()), // No arguments
+                Map.of("type", "array", "description", "List of allowed applications")
             ),
+
+            // Maps to AdminController.removeApp()
             new AgentCapability(
                 "removeApp",
-                "Remove an application from the whitelist.",
+                "Remove an application from the whitelist, immediately revoking access.",
                 "function",
                 Map.of(
                     "type", "object", 
                     "properties", Map.of("appId", Map.of("type", "string"))
                 ),
-                Map.of("type", "string")
+                Map.of("type", "string", "description", "Revocation confirmation")
             )
         );
     }

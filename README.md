@@ -82,9 +82,9 @@ You should see: ✅ SecretVaultService Ready
 ### 4. 🤖 AI Protocols
 Simault supports two major protocols for AI interaction.
 
-## 1. Model Context Protocol (MCP)Used by human-driven AI assistants (e.g., Claude Desktop, IDEs).
+#### 1. Model Context Protocol (MCP)Used by human-driven AI assistants (e.g., Claude Desktop, IDEs).
 Transport: Stdio or SSE.Tools Exposed: registerNewApp, checkSecretHealth, getSecret.
-## 2. Agent-to-Agent (A2A) Protocol Used by autonomous agents
+#### 2. Agent-to-Agent (A2A) Protocol Used by autonomous agents
 Simault segregates these into two distinct cards:
 Agent RoleDiscovery EndpointPurposeAdmin AgentGET /api/admin/.well-known/agent-cardDiscover tools to Register apps, Remove apps, and List registry.
 Client AgentGET /api/client/.well-known/agent-cardDiscover tools to Get Secrets and Rotate Secrets.
@@ -115,7 +115,7 @@ Test it: Ask the Agent, "Check the secret health for payment-service" or "List a
 ### 6. 🛡️ Admin API (Management)
 All Admin endpoints require the header X-ADMIN-KEY matching the value in application.properties.
 
-## 1. Register an App (Whitelist)
+#### 1. Register an App (Whitelist)
 POST /api/admin/apps
 
 ```properties
@@ -129,7 +129,7 @@ curl -X POST http://localhost:8080/api/admin/apps \
          }'
 ```
 
-## 2. List Allowed Apps
+#### 2. List Allowed Apps
 GET /api/admin/apps
 
 ```properties
@@ -137,7 +137,7 @@ GET /api/admin/apps
 curl -X GET http://localhost:8080/api/admin/apps \
      -H "X-ADMIN-KEY: super-secret-admin-password-123"
 ```
-## 3. Revoke Access
+#### 3. Revoke Access
 DELETE /api/admin/apps/{appId}
 
 ```properties
@@ -146,7 +146,7 @@ curl -X DELETE http://localhost:8080/api/admin/apps/payment-service \
      -H "X-ADMIN-KEY: super-secret-admin-password-123"
 ```
 
-## 4. Search Encryption Keys
+#### 4. Search Encryption Keys
 GET /api/admin/keys (Optional param: ?altName=...)
 
 ```properties
@@ -158,7 +158,7 @@ curl -X GET http://localhost:8080/api/admin/keys \
 ### 7. 🔐 Client API (Integration)
 Microservices use these endpoints to fetch their secrets. No API Key is required, but the appId must be whitelisted.
 
-## 1. Fetch Secret
+#### 1. Fetch Secret
 If the secret exists (and is < 1 hour old), it returns the existing one. If expired or missing, it generates a new one.
 
 GET /api/secrets/{appId}
@@ -177,7 +177,7 @@ JSON
 }
 
 
-## 2. Force Rotation
+#### 2. Force Rotation
 Forces the generation of a new secret immediately, regardless of expiration time.
 
 POST /api/secrets/{appId}/rotate

@@ -1,5 +1,6 @@
-# 🔐 Simault® (Simple Vault): A Simple Secrets Manager with Model Context Protocol (MCP) Enabled
-Simault® is a secure, lightweight Vault service built built for the AI era with **Java 21** and **Spring Boot 3**. It provides ephemeral (short-lived) secrets for microservices using **MongoDB Client-Side Field Level Encryption (CSFLE)** and comes with **Model Context Protocol (MCP)***
+# 🔐 Simault® (Simple Vault): A Simple Secrets Manager with MCP & A2A Protocols
+Simault® is a secure, lightweight Vault service built for the AI era with **Java 21** and **Spring Boot 3**. It is designed to be "Agent-First," supporting both the **Model Context Protocol (MCP)** for tool use and the **Agent-to-Agent (A2A) Protocol** for autonomous service discovery. It provides ephemeral (short-lived) secrets using **MongoDB Client-Side Field Level Encryption (CSFLE)** on **MongoDB Community Edition**
+
 
 ## 🚀 Features
 
@@ -7,21 +8,22 @@ Simault® is a secure, lightweight Vault service built built for the AI era with
 * **Auto-Expiration (TTL)**: Secrets automatically expire and are deleted after **1 hour**.
 * **Lazy Rotation**: If a secret is expired or missing, a new one is automatically generated and encrypted on the next request.
 * **AI-Ready (MCP)**: Native MCP Server implementation allowing tools like **Google Antigravity** or **Claude Desktop** to manage secrets via natural language.
-* **Modular Architecture**: MCP tools are strictly separated into Admin, Vault (Ops), and Observability domains for security.
+* **Agent-to-Agent (A2A) Protocol**: Exposes standardized `agent-card` endpoints for autonomous agents to discover and negotiate capabilities dynamically.
+* **Secure Logging**: Integrated **Log4j 2** with Regex Redaction to automatically scrub secrets (e.g., `Bearer`, `key":"...`) from console and file logs.
+* **Segregated Discovery**: Distinct A2A discovery endpoints for Admin (Management) vs. Client (Retrieval) agents.
 * **Whitelist Security**: Only applications explicitly registered via the Admin API can request secrets.
-* **Secure Admin API**: Administrative actions are protected by a configurable API Key.
-* **API-First Design**: No hardcoded application lists; everything is managed dynamically via REST endpoints.
-* **Highly Resilient Architecture**: Stateless Application + MongoDB Replica Set
+* **Highly Resilient Architecture**: Stateless Application + MongoDB Replica Set.
 
 ---
 
 ## 🛠️ Technology Stack
 
 * **Language**: Java 21
-* **Framework**: Spring Boot 3.2.1
-* **AI Framework**: Spring AI (Milestone 1.0.0-M6)
-* **Database**: MongoDB 4.2+ (Community or Enterprise)
-* **Security**: MongoDB Client-Side Field Level Encryption (CSFLE)
+* **Framework**: Spring Boot 3.3+
+* **AI Framework**: Spring AI
+* **Protocols**: Model Context Protocol (MCP), Agent-to-Agent (A2A)
+* **Database**: MongoDB 4.2+ (Client-Side Field Level Encryption)
+* **Logging**: Log4j 2 (XML Configured with Regex Redaction)
 * **Build Tool**: Maven
 
 ---
@@ -37,7 +39,7 @@ Simault® is a secure, lightweight Vault service built built for the AI era with
 ## 📦 Installation & Setup
 
 ### 1. Clone & Configure
-Clone the repository and verify the `application.properties` file in the **project root**.
+Clone the repository and verify the `application.properties` (or use environment variables).
 
 ```properties
 server.port=8080
@@ -77,8 +79,15 @@ mvn spring-boot:run
 ```
 You should see: ✅ SecretVaultService Ready
 
-### 4. 🤖 Model Context Protocol (MCP)
-Simault exposes an MCP Server over Stdio (or SSE), allowing AI Agents to perform tasks securely.
+### 4. 🤖 AI Protocols
+Simault supports two major protocols for AI interaction.
+
+## 1. Model Context Protocol (MCP)Used by human-driven AI assistants (e.g., Claude Desktop, IDEs).
+Transport: Stdio or SSE.Tools Exposed: registerNewApp, checkSecretHealth, getSecret.
+## 2. Agent-to-Agent (A2A) Protocol Used by autonomous agents
+Simault segregates these into two distinct cards:
+Agent RoleDiscovery EndpointPurposeAdmin AgentGET /api/admin/.well-known/agent-cardDiscover tools to Register apps, Remove apps, and List registry.
+Client AgentGET /api/client/.well-known/agent-cardDiscover tools to Get Secrets and Rotate Secrets.
 
 ### 5. How to Connect (Google Antigravity)
 Google Antigravity has native support for MCP servers. Follow these steps to connect Simault:
@@ -103,7 +112,7 @@ Add the Simault configuration to the mcpServers object:
 Save the file and click Refresh in the MCP Servers menu.
 Test it: Ask the Agent, "Check the secret health for payment-service" or "List all allowed apps in Simault."
 
-🛡️ Admin API (Management)
+### 6. 🛡️ Admin API (Management)
 All Admin endpoints require the header X-ADMIN-KEY matching the value in application.properties.
 
 ## 1. Register an App (Whitelist)
@@ -146,7 +155,7 @@ curl -X GET http://localhost:8080/api/admin/keys \
      -H "X-ADMIN-KEY: super-secret-admin-password-123"
 ```
 
-### 🔐 Client API (Integration)
+### 7. 🔐 Client API (Integration)
 Microservices use these endpoints to fetch their secrets. No API Key is required, but the appId must be whitelisted.
 
 ## 1. Fetch Secret
@@ -177,31 +186,30 @@ POST /api/secrets/{appId}/rotate
 curl -X POST http://localhost:8080/api/secrets/payment-service/rotate
 ```
 
-### 📂 Project Structure
+### 8. 📂 Project Structure
 ```text
-
 Simault/
 ├── pom.xml
 ├── master-key.txt                 <-- Generated Security Key
-├── application.properties         <-- Config (Root Level)
-└── src
-    └── main
-        ├── java/com/ayedata/simault
-           ├── config/            <-- Mongo & Encryption Config
-           ├── controller/        <-- AdminController & SecretController
-           ├── model/             <-- Java Records (AllowedApp, AppSecret)
-           ├── repository/        <-- MongoDB Repositories
-           ├── service/           <-- Core Business Logic
-           ├── SimaultApplication.java
-           ├── mcp/                    <-- MCP Server Implementation
-               ├── admin/
-               │   └── AdminRegistryTools.java       (Whitelist Mgmt)
-               ├── vault/
-               │   └── SecretVaultTools.java         (Get/Rotate Secrets)
-               └── observability/
-                    └── SecretHealthTools.java        (Safe Health Checks)
+├── src/main/resources
+│   ├── application.properties
+│   └── log4j2.xml                 <-- Security Redaction Rules
+└── src/main/java/com/ayedata/simault
+    ├── SimaultApplication.java
+    ├── a2a/                       <-- NEW: Top-Level A2A Protocol
+    │   ├── controller/            <-- Discovery Endpoints (Admin/Client)
+    │   └── model/                 <-- AgentCard, AgentCapability
+    ├── config/                    <-- Mongo, Encryption, AI Config
+    ├── controller/                <-- REST Controllers (Human/API)
+    ├── mcp/                       <-- AI Tools (@Tool Definitions)
+    │   ├── admin/                 <-- AdminRegistryTools.java
+    │   ├── vault/                 <-- SecretVaultTools.java
+    │   └── observability/         <-- SecretHealthTools.java
+    ├── model/                     <-- Domain Models
+    ├── repository/                <-- MongoDB Repositories
+    └── service/                   <-- Core Logic
 ```
-### ⚠️ Troubleshooting
+### 9.⚠️ Troubleshooting
 Import org.springframework.ai cannot be resolved:
 Ensure <repositories> in pom.xml includes spring-milestones.
 ```properties

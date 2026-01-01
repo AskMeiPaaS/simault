@@ -18,6 +18,7 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -25,6 +26,11 @@ public class AdminController {
 
     // 1. Initialize Log4j 2 Logger
     private static final Logger logger = LogManager.getLogger(AdminController.class);
+
+    // 2. XSS PREVENTION: Define a strict allowlist pattern for Identifiers.
+    // Allows: alphanumeric, underscores, and hyphens.
+    // Blocks: HTML tags (< >), quotes, slashes, and spaces.
+    private static final Pattern SAFE_ID_PATTERN = Pattern.compile("^[a-zA-Z0-9_\\-]+$");
 
     private final AppRegistryRepository registry;
     private final MongoClient mongoClient;
@@ -54,6 +60,14 @@ public class AdminController {
         return false;
     }
 
+    /**
+     * XSS VALIDATION HELPER
+     * Returns true if the input contains invalid characters (potential scripts).
+     */
+    private boolean isInvalidInput(String input) {
+        return input != null && !SAFE_ID_PATTERN.matcher(input).matches();
+    }
+
     // --- KEY ENDPOINT ---
 
     @GetMapping("/keys")
@@ -63,6 +77,13 @@ public class AdminController {
 
         if (isUnauthorized(apiKey)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        // 3. XSS FIX: Validate altName if provided
+        // This prevents malicious scripts from entering the searchName logic or being logged
+        if (altName != null && isInvalidInput(altName)) {
+            logger.warn("Potential XSS attempt rejected for altName: {}", altName);
+            return ResponseEntity.badRequest().build();
         }
 
         // 1. Determine which key name to search for
@@ -124,14 +145,16 @@ public class AdminController {
         
         String appId = payload.get("appId");
         
-        // Log the payload safely. If payload contained "key":"..." or "token=...", 
-        // Log4j would automatically redact those specific fields.
-        logger.info("Attempting to register app. Payload: {}", payload);
-
-        if (appId == null || appId.isBlank()) {
-            logger.warn("Registration failed: Missing appId in payload.");
-            return ResponseEntity.badRequest().body("appId is required");
+        // 4. XSS FIX: Validate appId input
+        // Since we reflect 'appId' back in the response string ("App registered: " + appId),
+        // we MUST validate it to prevent Reflected XSS.
+        if (appId == null || isInvalidInput(appId)) {
+            logger.warn("Registration rejected. Invalid format or potential XSS in appId: {}", appId);
+            return ResponseEntity.badRequest().body("Invalid App ID format. Use alphanumeric, dashes, or underscores only.");
         }
+
+        // Log the payload safely. Log4j would automatically redact sensitive fields if configured.
+        logger.info("Attempting to register app. Payload: {}", payload);
 
         try {
             registry.registerApp(appId, payload.get("description"));
@@ -149,6 +172,12 @@ public class AdminController {
             @PathVariable String appId) {
         
         if (isUnauthorized(apiKey)) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("⛔ Unauthorized");
+
+        // 5. XSS FIX: Validate path variable
+        if (isInvalidInput(appId)) {
+             logger.warn("Revocation rejected. Invalid format or potential XSS in appId: {}", appId);
+             return ResponseEntity.badRequest().body("Invalid App ID format.");
+        }
 
         logger.info("Attempting to revoke access for app: {}", appId);
 

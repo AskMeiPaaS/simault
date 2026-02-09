@@ -62,6 +62,13 @@ spring.ai.mcp.server.name=simault-mcp-server
 spring.ai.mcp.server.version=1.0.0
 spring.ai.mcp.server.type=SYNC
 ```
+### 1a. LOAD Master Key and 
+You will need to set the VAULT_ADMIN_API_KEY, MASTER_KEY environment variables.
+Run the following command
+```properties
+export VAULT_ADMIN_API_KEY=your-secure-password
+export MASTER_KEY=master-key-file.txt
+```
 
 ### 2. Generate Master Key
 The system requires a 96-byte local master key to unlock the vault. Run this command in the project root:
